@@ -7,9 +7,7 @@ fs.readFile("inp.txt","utf8",(err,data)=>{
 		console.error(err)
 		return;
 	}
-	//console.log(data);
 	var arr = data.toString().replace(/\r\n/g,'\n').split('\n');
-	//console.log(arr);
 	var depth = 0;
 	var hori = 0;
 	

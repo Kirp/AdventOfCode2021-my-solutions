@@ -1,23 +1,19 @@
-
 f = open("subInput.txt")
 readed = f.readlines()
-lastMeasure = 0
-midMeasure = 0
-currentMeasure = 0
+
+frontMeasure = int(readed[0])
+midMeasure = int(readed[0])+int(readed[1])
+lastMeasure = int(readed[0])+int(readed[1])+int(readed[2])
 depth = 0
 
-bypasser = 0
-for x in readed:
-    if bypasser > 2:
-        print("do stuff")
-    currentMeasure = int(x)
-    midMeasure += currentMeasure
-    lastMeasure += midMeasure
-    
-    
-    bypasser +=1
-    
-
-
-
-
+for x in range(3, len(readed)):
+    curNum = int(readed[x])
+    #print(curNum)
+    frontMeasure += curNum
+    midMeasure += curNum
+    if midMeasure > lastMeasure:
+        depth +=1
+    lastMeasure = midMeasure
+    midMeasure = frontMeasure
+    frontMeasure = curNum
+print(depth)
