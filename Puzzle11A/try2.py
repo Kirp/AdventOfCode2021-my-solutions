@@ -1,6 +1,6 @@
  
 
-f = open("input.txt")
+f = open("input0.txt")
 readed = f.readlines()
 
 def DisplayOctoMatrix(wid, hei,dict):
@@ -74,7 +74,7 @@ def OctoEnergyUp(wid, hei, dict):
 
 
 
-    DisplayOctoMatrix(wid, hei, dict)
+    #DisplayOctoMatrix(wid, hei, dict)
     return [dict, boomCount]
     
 #clean it
@@ -93,19 +93,16 @@ for y in range(octoHeight):
         namer = str(x)+"x"+str(y)
         octoMatrix[namer]= int(cleaned[y][x])
 
-totalBoomCount = 0
-for count in range(100):
+#totalBoomCount = 0
+for count in range(500):
 
     feedback = OctoEnergyUp(octoWidth, octoHeight,octoMatrix)
     octoMatrix = feedback[0]
-    totalBoomCount += feedback[1]
+    print("booms in count "+str(count)+" : "+str(feedback[1]))
+    if feedback[1] == 100:
+        print("all octo flash!")
+        break
 
 DisplayOctoMatrix(octoWidth, octoHeight, octoMatrix)
-print("final answer: "+str(totalBoomCount))
 
-"""
-print("Try 2 ")
-feedback = OctoEnergyUp(octoWidth, octoHeight,octoMatrix)
-octoMatrix = feedback[0]
-print("boomCount: "+str(feedback[1]))
-"""
+#440 <- final answer
