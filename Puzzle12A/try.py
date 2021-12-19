@@ -159,8 +159,20 @@ def GetScoreEaA(currentPathStr, scoreStr, pathList):
     return 3
 
 
-
-
+def ScoreUsingPattern(patternInt, currentPathStr, scoreStr, pathList):
+    if patternInt == 0:
+        return GetScoreaAE(currentPathStr, scoreStr, pathList)
+    if patternInt == 1:
+        return GetScoreaEA(currentPathStr, scoreStr, pathList)
+    if patternInt == 2:
+        return GetScoreAaE(currentPathStr, scoreStr, pathList)
+    if patternInt == 3:
+        return GetScoreAEa(currentPathStr, scoreStr, pathList)
+    if patternInt == 4:
+        return GetScoreEaA(currentPathStr, scoreStr, pathList)
+    if patternInt == 5:
+        return GetScoreEAa(currentPathStr, scoreStr, pathList)
+    
 
 
 
@@ -199,38 +211,45 @@ for pathsCtr in range(howManyPaths):
         currentPathSteps.append(pathList)
 print(currentPathSteps)
 
-for loopCtr in range(5):
-    howManyPaths = len(currentPathSteps)
-    for pathsCtr in range(howManyPaths):
-        nodeLatestPath = currentPathSteps[pathsCtr]
-        nodeLatestPath = nodeLatestPath[len(nodeLatestPath)-1]
-        print("Latest Path: "+nodeLatestPath)  
-        if nodeLatestPath == "end":
-            continue
-        try:  
-            nodeAvailablePaths = nodeList[nodeLatestPath]
-        except:
-            nodeAvailablePaths = []
-        print(nodeAvailablePaths)
 
-        #lets score them
-        scoreList = []
-        for elem in nodeAvailablePaths:
-            scoreList.append(GetScore(nodeLatestPath, elem, currentPathSteps[pathsCtr]))
-        print(scoreList)
-        highestScore = GetHighestIntPositionInList(scoreList)
-        print(highestScore)
-        chosenPath = nodeAvailablePaths[highestScore]
-        print(chosenPath)
-        
-        #check if chosenPath has nodes other than current
-        chosenPathCheck = nodeList[chosenPath]
-        
-        if len(chosenPathCheck) == 1:
-            #reflect back
-            currentPathSteps[pathsCtr].append(chosenPath)
-            currentPathSteps[pathsCtr].append(nodeLatestPath)
-        else:
-            currentPathSteps[pathsCtr].append(chosenPath)
-    print(currentPathSteps)
-    
+endedPathList = []
+for patternCtr in range(6):
+    copyCurrentPathSteps = currentPathSteps.copy()
+    for loopCtr in range(5):
+        howManyPaths = len(copyCurrentPathSteps)
+        for pathsCtr in range(howManyPaths):
+            nodeLatestPath = copyCurrentPathSteps[pathsCtr]
+            nodeLatestPath = nodeLatestPath[len(nodeLatestPath)-1]
+            print("Latest Path: "+nodeLatestPath)  
+            if nodeLatestPath == "end":
+                continue
+            try:  
+                nodeAvailablePaths = nodeList[nodeLatestPath]
+            except:
+                nodeAvailablePaths = []
+            print(nodeAvailablePaths)
+
+            #lets score them
+            scoreList = []
+            for elem in nodeAvailablePaths:
+                scoreList.append(ScoreUsingPattern(patternCtr,nodeLatestPath, elem, copyCurrentPathSteps[pathsCtr]))
+            print(scoreList)
+            highestScore = GetHighestIntPositionInList(scoreList)
+            print(highestScore)
+            chosenPath = nodeAvailablePaths[highestScore]
+            print(chosenPath)
+            
+            #check if chosenPath has nodes other than current
+            chosenPathCheck = nodeList[chosenPath]
+            
+            if len(chosenPathCheck) == 1:
+                #reflect back
+                copyCurrentPathSteps[pathsCtr].append(chosenPath)
+                copyCurrentPathSteps[pathsCtr].append(nodeLatestPath)
+            else:
+                copyCurrentPathSteps[pathsCtr].append(chosenPath)
+        #print(copyCurrentPathSteps)
+    endedPathList += copyCurrentPathSteps
+#print(endedPathList)
+for ended in endedPathList:
+    print(ended)   
