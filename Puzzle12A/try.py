@@ -32,14 +32,136 @@ def GetScore(currentPathStr, scoreStr, pathList):
     if scoreStr == "start":
         return -1
     if scoreStr == "end":
-        return 1
-    if scoreStr.isupper() == True:
         return 2
+    if scoreStr.isupper() == True:
+        if pathList.count(scoreStr) > 0:
+            return 1
+        else: 
+            return 3
+    if pathList.count(scoreStr) > 0:
+        return -1
+    if currentPathStr.islower() and scoreStr.islower():
+        return -1
+    return 4
+
+
+def GetScoreaAE(currentPathStr, scoreStr, pathList):
+    #priotize small, large, End
+    #assume there are no invalid characters
+    if scoreStr == "start":
+        return -1
+    if scoreStr == "end":
+        return 2
+    if scoreStr.isupper() == True:
+        if pathList.count(scoreStr) > 0:
+            return 1
+        else: 
+            return 3
+    if pathList.count(scoreStr) > 0:
+        return -1
+    if currentPathStr.islower() and scoreStr.islower():
+        return -1
+    return 4
+
+def GetScoreaEA(currentPathStr, scoreStr, pathList):
+    #priotize small, end, large
+    #assume there are no invalid characters
+    if scoreStr == "start":
+        return -1
+    if scoreStr == "end":
+        return 3
+    if scoreStr.isupper() == True:
+        if pathList.count(scoreStr) > 0:
+            return 1
+        else: 
+            return 2
+    if pathList.count(scoreStr) > 0:
+        return -1
+    if currentPathStr.islower() and scoreStr.islower():
+        return -1
+    return 4
+
+
+def GetScoreAaE(currentPathStr, scoreStr, pathList):
+    #prioritize large, small, end
+    #assume there are no invalid characters
+    if scoreStr == "start":
+        return -1
+    if scoreStr == "end":
+        return 2
+    if scoreStr.isupper() == True:
+        if pathList.count(scoreStr) > 0:
+            return 1
+        else: 
+            return 4
     if pathList.count(scoreStr) > 0:
         return -1
     if currentPathStr.islower() and scoreStr.islower():
         return -1
     return 3
+
+def GetScoreAEa(currentPathStr, scoreStr, pathList):
+    #prioritize large, end, small
+    #assume there are no invalid characters
+    if scoreStr == "start":
+        return -1
+    if scoreStr == "end":
+        return 2
+    if scoreStr.isupper() == True:
+        if pathList.count(scoreStr) > 0:
+            return 1
+        else: 
+            return 4
+    if pathList.count(scoreStr) > 0:
+        return -1
+    if currentPathStr.islower() and scoreStr.islower():
+        return -1
+    return 3
+
+
+
+
+def GetScoreEAa(currentPathStr, scoreStr, pathList):
+    #prioritize end, large, small
+    #assume there are no invalid characters
+    if scoreStr == "start":
+        return -1
+    if scoreStr == "end":
+        return 4
+    if scoreStr.isupper() == True:
+        if pathList.count(scoreStr) > 0:
+            return 1
+        else: 
+            return 3
+    if pathList.count(scoreStr) > 0:
+        return -1
+    if currentPathStr.islower() and scoreStr.islower():
+        return -1
+    return 2
+
+
+def GetScoreEaA(currentPathStr, scoreStr, pathList):
+    #prioritize end, small, large
+    #assume there are no invalid characters
+    if scoreStr == "start":
+        return -1
+    if scoreStr == "end":
+        return 4
+    if scoreStr.isupper() == True:
+        if pathList.count(scoreStr) > 0:
+            return 1
+        else: 
+            return 2
+    if pathList.count(scoreStr) > 0:
+        return -1
+    if currentPathStr.islower() and scoreStr.islower():
+        return -1
+    return 3
+
+
+
+
+
 
 
 
@@ -77,35 +199,38 @@ for pathsCtr in range(howManyPaths):
         currentPathSteps.append(pathList)
 print(currentPathSteps)
 
-howManyPaths = len(currentAvailablePaths)
-for pathsCtr in range(howManyPaths):
-    nodeLatestPath = currentAvailablePaths[pathsCtr]
-    nodeLatestPath = nodeLatestPath[len(nodeLatestPath)-1]
-    print("Latest Path: "+str(nodeLatestPath))  
-    try:  
-        nodeAvailablePaths = nodeList[nodeLatestPath]
-    except:
-        nodeAvailablePaths = []
-    print(nodeAvailablePaths)
+for loopCtr in range(5):
+    howManyPaths = len(currentPathSteps)
+    for pathsCtr in range(howManyPaths):
+        nodeLatestPath = currentPathSteps[pathsCtr]
+        nodeLatestPath = nodeLatestPath[len(nodeLatestPath)-1]
+        print("Latest Path: "+nodeLatestPath)  
+        if nodeLatestPath == "end":
+            continue
+        try:  
+            nodeAvailablePaths = nodeList[nodeLatestPath]
+        except:
+            nodeAvailablePaths = []
+        print(nodeAvailablePaths)
 
-    #lets score them
-    scoreList = []
-    for elem in nodeAvailablePaths:
-        scoreList.append(GetScore(nodeLatestPath, elem, currentAvailablePaths[pathsCtr]))
-    print(scoreList)
-    highestScore = GetHighestIntPositionInList(scoreList)
-    print(highestScore)
-    chosenPath = nodeAvailablePaths[highestScore]
-    print(chosenPath)
-    
-    #check if chosenPath has nodes other than current
-    chosenPathCheck = nodeList[chosenPath]
-    
-    if len(chosenPathCheck) == 1:
-        #reflect back
-        currentPathSteps[pathsCtr].append(chosenPath)
-        currentPathSteps[pathsCtr].append(nodeLatestPath)
-    else:
-        currentPathSteps[pathsCtr].append(chosenPath)
-print(currentPathSteps)
+        #lets score them
+        scoreList = []
+        for elem in nodeAvailablePaths:
+            scoreList.append(GetScore(nodeLatestPath, elem, currentPathSteps[pathsCtr]))
+        print(scoreList)
+        highestScore = GetHighestIntPositionInList(scoreList)
+        print(highestScore)
+        chosenPath = nodeAvailablePaths[highestScore]
+        print(chosenPath)
+        
+        #check if chosenPath has nodes other than current
+        chosenPathCheck = nodeList[chosenPath]
+        
+        if len(chosenPathCheck) == 1:
+            #reflect back
+            currentPathSteps[pathsCtr].append(chosenPath)
+            currentPathSteps[pathsCtr].append(nodeLatestPath)
+        else:
+            currentPathSteps[pathsCtr].append(chosenPath)
+    print(currentPathSteps)
     
