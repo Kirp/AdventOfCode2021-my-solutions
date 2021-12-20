@@ -3,7 +3,7 @@
 
 
 #--
-f = open("input0.txt")
+f = open("input.txt")
 readed = f.readlines()
 
 cleaned = []
@@ -26,42 +26,64 @@ def GetScore(currentPathStr, scoreStr, pathList, nodes):
         return 2
     if len(nodes[scoreStr]) == 1:
         #check if this path was used before
-        for path in pathList:
-            pass
+        if scoreStr.isupper() == True:
+            """
+            for pathCtr in range(len(pathList)):
+                path = pathList[pathCtr]
+                if path == scoreStr:
+                    if pathCtr < len(pathList)-1:
+                        if pathList[pathCtr+1]==currentPathStr:
+                            return -1
+            """            
+            return -1
+        
+        if currentPathStr.islower() and scoreStr.islower():
+            return -1
+
+                
 
     if scoreStr.isupper() == True:
         return 3
     if pathList.count(scoreStr) > 0:
         return -1
-    if currentPathStr != "start":
-        if currentPathStr.islower() and scoreStr.islower():
-            return -1
+    #if currentPathStr != "start":
+    #    if currentPathStr.islower() and scoreStr.islower():
+    #        return -1
+    
     return 4
 
 
 
 def RunPathSearchPattern(patternInt, pathTakenList, nodes):
     unfollowedPaths = []
-
     antiLoop = 0
+    #print("starting with:")
+    #print(pathTakenList)
 
     while antiLoop < 1000:
         antiLoop+=1
         #print("loop: "+str(antiLoop))
         currentNode = pathTakenList[len(pathTakenList)-1]
+        #print("currentNode: "+currentNode)
         pathways = nodeList[currentNode]
         if currentNode == "end":
             return [pathTakenList, unfollowedPaths]
         scoreList = []
         for elem in pathways:
             scoreList.append(GetScore(currentNode, elem, pathTakenList, nodes))
-        print("find highest score")
-        print(pathways)
-        print(scoreList)
+        #print("find highest score")
+        #print(pathways)
+        #print(scoreList)
+        
+        deadEndCheck = scoreList.count(-1)
+        #print("deadEndCheck: "+str(deadEndCheck))
+        if deadEndCheck == len(scoreList):
+            return [[],unfollowedPaths]
         highestScore = GetHighestIntPositionInList(scoreList)
-        print(highestScore)
+        #print(highestScore)
+        
         chosenPath = pathways[highestScore]
-        print(chosenPath)
+        #print(chosenPath)
         for unfollowCtr in range(len(pathways)):
             unFollow = pathways[unfollowCtr]
             unFollowScore = scoreList[unfollowCtr]
@@ -106,30 +128,34 @@ print(nodeList)
 acceptedPaths = []
 currentPathSteps = ["start"]
 currentNode = "start"
+allRejects = []
 
 loopCtr = 0
 while loopCtr < 1000:
     loopCtr +=1
     patternResult = RunPathSearchPattern(0, currentPathSteps, nodeList)
     rejectedList = patternResult[1]
-    acceptedPaths.append(patternResult[0])
+    if len(patternResult[0])>0:
+        acceptedPaths.append(patternResult[0])
     #take out the rejected with 'end'
-    rejectOpen = []
     for reject in rejectedList:
         if reject[len(reject)-1] == "end":
             if(acceptedPaths.count(reject)==0):
                 acceptedPaths.append(reject)
         else:
-            rejectOpen.append(reject)
-    if len(rejectOpen) == 0:
+            if(allRejects.count(reject)==0):
+                allRejects.append(reject)
+    if len(allRejects) == 0:
         loopCtr = 1001
     else:
-        currentPathSteps = rejectOpen[0]
+        currentPathSteps = allRejects.pop()
+        
+
 print("all done")
 print("final accepted paths")
 print(len(acceptedPaths))
-for paths in acceptedPaths:
-    print(paths)
+#for paths in acceptedPaths:
+#    print(paths)
 
 
 
