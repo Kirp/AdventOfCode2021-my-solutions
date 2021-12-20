@@ -1,15 +1,6 @@
 
 
 
-class Nodes:
-    def __init__(self, name, connection):
-        self.name = name
-        self.connections =[]
-        self.connections.append(connection)
-    
-    def AddConnections(self, newConnection):
-        self.connections.append(newConnection)
-
 
 #--
 f = open("input0.txt")
@@ -27,153 +18,66 @@ def GetHighestIntPositionInList(intList):
             highestPosi = elemCtr
     return highestPosi
 
-def GetScore(currentPathStr, scoreStr, pathList):
+def GetScore(currentPathStr, scoreStr, pathList, nodes):
     #assume there are no invalid characters
     if scoreStr == "start":
         return -1
     if scoreStr == "end":
         return 2
+    if len(nodes[scoreStr]) == 1:
+        #check if this path was used before
+        for path in pathList:
+            pass
+
     if scoreStr.isupper() == True:
-        if pathList.count(scoreStr) > 0:
-            return 1
-        else: 
-            return 3
-    if pathList.count(scoreStr) > 0:
-        return -1
-    if currentPathStr.islower() and scoreStr.islower():
-        return -1
-    return 4
-
-
-def GetScoreaAE(currentPathStr, scoreStr, pathList):
-    #priotize small, large, End
-    #assume there are no invalid characters
-    if scoreStr == "start":
-        return -1
-    if scoreStr == "end":
-        return 2
-    if scoreStr.isupper() == True:
-        if pathList.count(scoreStr) > 0:
-            return 1
-        else: 
-            return 3
-    if pathList.count(scoreStr) > 0:
-        return -1
-    if currentPathStr.islower() and scoreStr.islower():
-        return -1
-    return 4
-
-def GetScoreaEA(currentPathStr, scoreStr, pathList):
-    #priotize small, end, large
-    #assume there are no invalid characters
-    if scoreStr == "start":
-        return -1
-    if scoreStr == "end":
         return 3
-    if scoreStr.isupper() == True:
-        if pathList.count(scoreStr) > 0:
-            return 1
-        else: 
-            return 2
     if pathList.count(scoreStr) > 0:
         return -1
-    if currentPathStr.islower() and scoreStr.islower():
-        return -1
+    if currentPathStr != "start":
+        if currentPathStr.islower() and scoreStr.islower():
+            return -1
     return 4
 
 
-def GetScoreAaE(currentPathStr, scoreStr, pathList):
-    #prioritize large, small, end
-    #assume there are no invalid characters
-    if scoreStr == "start":
-        return -1
-    if scoreStr == "end":
-        return 2
-    if scoreStr.isupper() == True:
-        if pathList.count(scoreStr) > 0:
-            return 1
-        else: 
-            return 4
-    if pathList.count(scoreStr) > 0:
-        return -1
-    if currentPathStr.islower() and scoreStr.islower():
-        return -1
-    return 3
 
-def GetScoreAEa(currentPathStr, scoreStr, pathList):
-    #prioritize large, end, small
-    #assume there are no invalid characters
-    if scoreStr == "start":
-        return -1
-    if scoreStr == "end":
-        return 2
-    if scoreStr.isupper() == True:
-        if pathList.count(scoreStr) > 0:
-            return 1
-        else: 
-            return 4
-    if pathList.count(scoreStr) > 0:
-        return -1
-    if currentPathStr.islower() and scoreStr.islower():
-        return -1
-    return 3
+def RunPathSearchPattern(patternInt, pathTakenList, nodes):
+    unfollowedPaths = []
 
+    antiLoop = 0
 
+    while antiLoop < 1000:
+        antiLoop+=1
+        #print("loop: "+str(antiLoop))
+        currentNode = pathTakenList[len(pathTakenList)-1]
+        pathways = nodeList[currentNode]
+        if currentNode == "end":
+            return [pathTakenList, unfollowedPaths]
+        scoreList = []
+        for elem in pathways:
+            scoreList.append(GetScore(currentNode, elem, pathTakenList, nodes))
+        print("find highest score")
+        print(pathways)
+        print(scoreList)
+        highestScore = GetHighestIntPositionInList(scoreList)
+        print(highestScore)
+        chosenPath = pathways[highestScore]
+        print(chosenPath)
+        for unfollowCtr in range(len(pathways)):
+            unFollow = pathways[unfollowCtr]
+            unFollowScore = scoreList[unfollowCtr]
+            if unFollow != chosenPath and unFollowScore>0:
+                unPathway = pathTakenList.copy()
+                unPathway.append(unFollow)
+                unfollowedPaths.append(unPathway)
+        
+        pathTakenList.append(chosenPath)
+        #print("updated path")
+        #print(pathTakenList)
+        #print("rejected paths")
+        #print(unfollowedPaths)
+    return "rejected"
 
-
-def GetScoreEAa(currentPathStr, scoreStr, pathList):
-    #prioritize end, large, small
-    #assume there are no invalid characters
-    if scoreStr == "start":
-        return -1
-    if scoreStr == "end":
-        return 4
-    if scoreStr.isupper() == True:
-        if pathList.count(scoreStr) > 0:
-            return 1
-        else: 
-            return 3
-    if pathList.count(scoreStr) > 0:
-        return -1
-    if currentPathStr.islower() and scoreStr.islower():
-        return -1
-    return 2
-
-
-def GetScoreEaA(currentPathStr, scoreStr, pathList):
-    #prioritize end, small, large
-    #assume there are no invalid characters
-    if scoreStr == "start":
-        return -1
-    if scoreStr == "end":
-        return 4
-    if scoreStr.isupper() == True:
-        if pathList.count(scoreStr) > 0:
-            return 1
-        else: 
-            return 2
-    if pathList.count(scoreStr) > 0:
-        return -1
-    if currentPathStr.islower() and scoreStr.islower():
-        return -1
-    return 3
-
-
-def ScoreUsingPattern(patternInt, currentPathStr, scoreStr, pathList):
-    if patternInt == 0:
-        return GetScoreaAE(currentPathStr, scoreStr, pathList)
-    if patternInt == 1:
-        return GetScoreaEA(currentPathStr, scoreStr, pathList)
-    if patternInt == 2:
-        return GetScoreAaE(currentPathStr, scoreStr, pathList)
-    if patternInt == 3:
-        return GetScoreAEa(currentPathStr, scoreStr, pathList)
-    if patternInt == 4:
-        return GetScoreEaA(currentPathStr, scoreStr, pathList)
-    if patternInt == 5:
-        return GetScoreEAa(currentPathStr, scoreStr, pathList)
     
-
 
 
 
@@ -196,10 +100,65 @@ for clean in cleaned:
         nodeList[dataSplit[1]] = [dataSplit[0]]
 print(nodeList)
 
+
 #lets do the pathing
 # first lets add the links from start
-currentPathSteps = [["start"]]
+acceptedPaths = []
+currentPathSteps = ["start"]
 currentNode = "start"
+
+loopCtr = 0
+while loopCtr < 1000:
+    loopCtr +=1
+    patternResult = RunPathSearchPattern(0, currentPathSteps, nodeList)
+    rejectedList = patternResult[1]
+    acceptedPaths.append(patternResult[0])
+    #take out the rejected with 'end'
+    rejectOpen = []
+    for reject in rejectedList:
+        if reject[len(reject)-1] == "end":
+            if(acceptedPaths.count(reject)==0):
+                acceptedPaths.append(reject)
+        else:
+            rejectOpen.append(reject)
+    if len(rejectOpen) == 0:
+        loopCtr = 1001
+    else:
+        currentPathSteps = rejectOpen[0]
+print("all done")
+print("final accepted paths")
+print(len(acceptedPaths))
+for paths in acceptedPaths:
+    print(paths)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"""
 currentAvailablePaths = nodeList[currentNode]
 howManyPaths = len(currentAvailablePaths)
 for pathsCtr in range(howManyPaths):
@@ -215,29 +174,30 @@ print(currentPathSteps)
 endedPathList = []
 for patternCtr in range(6):
     copyCurrentPathSteps = currentPathSteps.copy()
+    print(copyCurrentPathSteps)
     for loopCtr in range(5):
         howManyPaths = len(copyCurrentPathSteps)
         for pathsCtr in range(howManyPaths):
             nodeLatestPath = copyCurrentPathSteps[pathsCtr]
             nodeLatestPath = nodeLatestPath[len(nodeLatestPath)-1]
-            print("Latest Path: "+nodeLatestPath)  
+            #print("Latest Path: "+nodeLatestPath)  
             if nodeLatestPath == "end":
                 continue
             try:  
                 nodeAvailablePaths = nodeList[nodeLatestPath]
             except:
                 nodeAvailablePaths = []
-            print(nodeAvailablePaths)
+            #print(nodeAvailablePaths)
 
             #lets score them
             scoreList = []
             for elem in nodeAvailablePaths:
                 scoreList.append(ScoreUsingPattern(patternCtr,nodeLatestPath, elem, copyCurrentPathSteps[pathsCtr]))
-            print(scoreList)
+            #print(scoreList)
             highestScore = GetHighestIntPositionInList(scoreList)
-            print(highestScore)
+            #print(highestScore)
             chosenPath = nodeAvailablePaths[highestScore]
-            print(chosenPath)
+            #print(chosenPath)
             
             #check if chosenPath has nodes other than current
             chosenPathCheck = nodeList[chosenPath]
@@ -253,3 +213,4 @@ for patternCtr in range(6):
 #print(endedPathList)
 for ended in endedPathList:
     print(ended)   
+"""   
